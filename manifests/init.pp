@@ -1,6 +1,7 @@
 class server (
 	$locale_default              = '',
 	$locale_available            = '',
+	$timezone                    = 'America/New_York',
 	$cron_env                    = ['MAILTO=root'],
 	$ntp_servers                 = [],
 	$security_updates            = true,
@@ -59,6 +60,10 @@ class server (
 	class { 'locales':
 	  default_value  => $locale_default,
 	  available      => $locale_available,
+	}
+
+	class { 'timezone':
+	  timezone => $timezone,
 	}
 
 	cron { 'enviroment':
