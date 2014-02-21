@@ -1,6 +1,6 @@
 class server (
-	$locale_default              = '',
-	$locale_available            = '',
+	$locale_default              = 'en_US.UTF-8 UTF-8',
+	$locale_available            = ['en_US.UTF-8 UTF-8'],
 	$timezone                    = 'America/New_York',
 	$cron_env                    = ['MAILTO=root'],
 	$ntp_servers                 = [],
