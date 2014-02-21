@@ -1,7 +1,9 @@
 class server (
 	$locale_default              = '',
 	$locale_available            = '',
+	$cron_env                    = ['MAILTO=root'],
 	$ntp_servers                 = [],
+	$security_updates            = true,
 	$hostname                    = '',
 	$apache_default_mods         = true,
 	$apache_default_vhost        = true,
@@ -59,6 +61,15 @@ class server (
 	  available      => $locale_available,
 	}
 
+	cron { 'enviroment':
+	  environment => $cron_env,
+	  command => 'echo "" > /dev/null',
+	  minute => '0',
+	  hour => '0',
+	  monthday => '1',
+	  month => '*',
+	}
+
 	class { 'server::hostname':
 		hostname => $hostname
 	}
@@ -67,6 +78,38 @@ class server (
 		class { '::ntp':
 		  servers => $ntp_servers,
 		}
+	}
+
+	class { 'apt':
+	  always_apt_update    => false,
+	  disable_keys         => undef,
+	  purge_sources_list   => true,
+	  purge_sources_list_d => true,
+	}
+
+	apt::source { 'debian':
+	  location          => 'http://ftp.us.debian.org/debian/',
+	  release           => 'wheezy',
+	  repos             => 'main',
+	  include_src       => true
+	}
+
+	apt::source { 'updates':
+	  location          => 'http://ftp.us.debian.org/debian/',
+	  release           => 'wheezy-updates',
+	  repos             => 'main',
+	  include_src       => true
+	}
+
+	apt::source { 'security':
+	  location          => 'http://security.debian.org/',
+	  release           => 'wheezy/updates',
+	  repos             => 'main',
+	  include_src       => true
+	}
+
+	if(str2bool($security_updates)){
+		class { 'server::security_updates': }
 	}
 
 	# class { 'server::webserver':
