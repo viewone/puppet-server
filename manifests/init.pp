@@ -1,11 +1,14 @@
 class server (
+	$hostname                    = '',
 	$locale_default              = 'en_US.UTF-8 UTF-8',
 	$locale_available            = ['en_US.UTF-8 UTF-8'],
 	$timezone                    = 'America/New_York',
 	$cron_env                    = ['MAILTO=root'],
 	$ntp_servers                 = [],
+	$logrotate                   = true,
+	$packages                    = [],
+	$users                       = {},
 	$security_updates            = true,
-	$hostname                    = '',
 	$apache_default_mods         = true,
 	$apache_default_vhost        = true,
 	$apache_default_ssl_vhost    = false,
@@ -117,6 +120,28 @@ class server (
 		class { 'server::security_updates': }
 	}
 
+	if(str2bool($logrotate)){
+		class { 'logrotate': }
+	}
+
+	if !empty($packages) {
+		package { $packages:
+			ensure => installed,
+		}	
+	}
+
+	if !empty($users) {
+
+		$defaults = {
+			key => '',
+			password => false,
+			groups => [],
+			shell => false,
+		}
+
+		create_resources(suser, $users, $defaults)
+	}
+
 	# class { 'server::webserver':
 	# 	default_mods         => $apache_default_mods,
 	#     default_vhost        => $apache_default_vhost,
@@ -190,4 +215,27 @@ class server (
 	# 		mod_mysql_password => $ftp_mod_mysql_password,
 	# 	}
 	# }
+}
+
+define suser ($key, $password, $groups, $shell) {
+	user { $name :
+		name => $name,
+		ensure => 'present',
+		managehome => true,
+		password => $password,
+		groups => $groups,
+		shell => $shell,
+	}
+
+	if !empty($key) {
+
+		ssh_authorized_key { $name:
+		    ensure => present,
+		    key    => $key,
+		    type   => 'ssh-rsa',
+		    name   => 'kierzniak@ironman.local',
+		    user   => $name,
+		    require => User[$name],
+		}
+	}
 }
