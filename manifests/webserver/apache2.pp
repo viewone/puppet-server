@@ -77,16 +77,9 @@ class server::webserver::apache2(
     package_ensure       => $package_ensure,
   }
 
-  apache::mod { 'actions': }
-  apache::mod { 'rewrite': }
-  apache::mod { 'fastcgi': }
-  apache::mod { 'proxy': }
-  apache::mod { 'proxy_http': }
-
-  file { '/var/www/tools/':
-      ensure => "directory",
-      owner  => "root",
-      group  => "root",
-      mode   => 755,
-  }
+  # apache::mod { 'actions': }
+  # apache::mod { 'rewrite': }
+  # apache::mod { 'fastcgi': }
+  # apache::mod { 'proxy': }
+  # apache::mod { 'proxy_http': }
 }

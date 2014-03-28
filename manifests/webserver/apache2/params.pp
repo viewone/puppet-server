@@ -4,8 +4,9 @@ class server::webserver::apache2::params {
 		$servername = $::fqdn
 	} else {
 		$servername = $::hostname
-	} 
-    $user             = 'www-data'
+	}
+	
+  $user             = 'www-data'
 	$group            = 'www-data'
 	$apache_name      = 'apache2'
 	$httpd_dir        = '/etc/apache2'

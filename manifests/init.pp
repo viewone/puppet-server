@@ -134,6 +134,7 @@ class server (
 
 		$defaults = {
 			key => '',
+			key_name => '',
 			password => false,
 			groups => [],
 			shell => false,
@@ -142,45 +143,45 @@ class server (
 		create_resources(suser, $users, $defaults)
 	}
 
-	# class { 'server::webserver':
-	# 	default_mods         => $apache_default_mods,
-	#     default_vhost        => $apache_default_vhost,
-	#     default_ssl_vhost    => $apache_default_ssl_vhost,
-	#     default_ssl_cert     => $apache_default_ssl_cert,
-	#     default_ssl_key      => $apache_default_ssl_key,
-	#     default_ssl_chain    => $apache_default_ssl_chain,
-	#     default_ssl_ca       => $apache_default_ssl_ca,
-	#     default_ssl_crl_path => $apache_default_ssl_crl_path,
-	#     default_ssl_crl      => $apache_default_ssl_crl,
-	#     service_enable       => $apache_service_enable,
-	#     service_ensure       => $apache_service_ensure,
-	#     purge_configs        => $apache_purge_configs,
-	#     purge_vdir           => $apache_purge_vdir,
-	#     serveradmin          => $apache_serveradmin,
-	#     sendfile             => $apache_sendfile,
-	#     error_documents      => $apache_error_documents,
-	#     timeout              => $apache_timeout,
-	#     httpd_dir            => $apache_httpd_dir,
-	#     confd_dir            => $apache_confd_dir,
-	#     vhost_dir            => $apache_vhost_dir,
-	#     vhost_enable_dir     => $apache_vhost_enable_dir,
-	#     mod_dir              => $apache_mod_dir,
-	#     mod_enable_dir       => $apache_mod_enable_dir,
-	#     mpm_module           => $apache_mpm_module,
-	#     conf_template        => $apache_conf_template,
-	#     servername           => $apache_servername,
-	#     manage_user          => $apache_manage_user,
-	#     manage_group         => $apache_manage_group,
-	#     user                 => $apache_user,
-	#     group                => $apache_group,
-	#     keepalive            => $apache_keepalive,
-	#     keepalive_timeout    => $apache_keepalive_timeout,
-	#     logroot              => $apache_logroot,
-	#     ports_file           => $apache_ports_file,
-	#     server_tokens        => $apache_server_tokens,
-	#     server_signature     => $apache_server_signature,
-	#     package_ensure       => $apache_package_ensure,
-	# }
+	class { 'server::webserver':
+		default_mods         => $apache_default_mods,
+	    default_vhost        => $apache_default_vhost,
+	    default_ssl_vhost    => $apache_default_ssl_vhost,
+	    default_ssl_cert     => $apache_default_ssl_cert,
+	    default_ssl_key      => $apache_default_ssl_key,
+	    default_ssl_chain    => $apache_default_ssl_chain,
+	    default_ssl_ca       => $apache_default_ssl_ca,
+	    default_ssl_crl_path => $apache_default_ssl_crl_path,
+	    default_ssl_crl      => $apache_default_ssl_crl,
+	    service_enable       => $apache_service_enable,
+	    service_ensure       => $apache_service_ensure,
+	    purge_configs        => $apache_purge_configs,
+	    purge_vdir           => $apache_purge_vdir,
+	    serveradmin          => $apache_serveradmin,
+	    sendfile             => $apache_sendfile,
+	    error_documents      => $apache_error_documents,
+	    timeout              => $apache_timeout,
+	    httpd_dir            => $apache_httpd_dir,
+	    confd_dir            => $apache_confd_dir,
+	    vhost_dir            => $apache_vhost_dir,
+	    vhost_enable_dir     => $apache_vhost_enable_dir,
+	    mod_dir              => $apache_mod_dir,
+	    mod_enable_dir       => $apache_mod_enable_dir,
+	    mpm_module           => $apache_mpm_module,
+	    conf_template        => $apache_conf_template,
+	    servername           => $apache_servername,
+	    manage_user          => $apache_manage_user,
+	    manage_group         => $apache_manage_group,
+	    user                 => $apache_user,
+	    group                => $apache_group,
+	    keepalive            => $apache_keepalive,
+	    keepalive_timeout    => $apache_keepalive_timeout,
+	    logroot              => $apache_logroot,
+	    ports_file           => $apache_ports_file,
+	    server_tokens        => $apache_server_tokens,
+	    server_signature     => $apache_server_signature,
+	    package_ensure       => $apache_package_ensure,
+	}
 
 	# if(str2bool($php_enabled)){
 	# 	class { 'server::php': 
@@ -217,7 +218,7 @@ class server (
 	# }
 }
 
-define suser ($key, $password, $groups, $shell) {
+define suser ($key, $key_name, $password, $groups, $shell) {
 	user { $name :
 		name => $name,
 		ensure => 'present',
@@ -233,7 +234,7 @@ define suser ($key, $password, $groups, $shell) {
 		    ensure => present,
 		    key    => $key,
 		    type   => 'ssh-rsa',
-		    name   => 'kierzniak@ironman.local',
+		    name   => $key_name,
 		    user   => $name,
 		    require => User[$name],
 		}
