@@ -2,10 +2,11 @@ class server (
     $default_locale              = 'en_US.UTF-8 UTF-8',
     $locales                     = ['en_US.UTF-8 UTF-8'],
     $timezone                    = 'America/New_York',
-    $cron_env                    = ['MAILTO=root'],
-    $ntp_servers                 = [],
     $hostname                    = '',
     $hosts                       = {},
+    $sources                     = {},
+    $cron_env                    = ['MAILTO=root'],
+    $ntp_servers                 = [],
     $logrotate                   = true,
     $packages                    = [],
     $users                       = {},
@@ -42,43 +43,31 @@ class server (
         }
     }
 
-    class { 'apt':
-      update => {
-        frequency => 'daily',
-      },
-      purge => {
-        'sources.list' => true,
-        'sources.list.d' => true,
-        'preferences.list' => true,
-        'preferences.list.d' => true,
-      },
-    }
+    if !empty($users) {
 
-    apt::source { 'debian':
-      location          => 'http://ftp.us.debian.org/debian/',
-      release           => 'wheezy',
-      repos             => 'main non-free contrib',
-      include           => {
-        deb => true,
-      }
-    }
+        class { 'apt':
+            update => {
+                frequency => 'daily',
+            },
+            purge => {
+                'sources.list' => true,
+                'sources.list.d' => true,
+                'preferences.list' => true,
+                'preferences.list.d' => true,
+            },
+        }
 
-    apt::source { 'updates':
-      location          => 'http://ftp.us.debian.org/debian/',
-      release           => 'wheezy-updates',
-      repos             => 'main non-free contrib',
-      include           => {
-        deb => true,
-      }
-    }
+        $sources_default = {
+            location => '',
+            release => 'wheezy',
+            repos => 'main non-free contrib',
+            password => false,
+            include           => {
+                deb => true,
+              }
+        }
 
-    apt::source { 'security':
-      location          => 'http://security.debian.org/',
-      release           => 'wheezy/updates',
-      repos             => 'main non-free contrib',
-      include           => {
-        deb => true,
-      }
+        create_resources(apt::source, $sources, $sources_default)
     }
 
     if(str2bool($security_updates)){
