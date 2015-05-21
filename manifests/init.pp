@@ -1,7 +1,7 @@
 class server (
 	$hostname                    = '',
-	$locale_default              = 'en_US.UTF-8 UTF-8',
-	$locale_available            = ['en_US.UTF-8 UTF-8'],
+	$default_locale              = 'en_US.UTF-8 UTF-8',
+	$locales                     = ['en_US.UTF-8 UTF-8'],
 	$timezone                    = 'America/New_York',
 	$cron_env                    = ['MAILTO=root'],
 	$ntp_servers                 = [],
@@ -12,8 +12,8 @@ class server (
 ) inherits server::params{
 
 	class { 'locales':
-	  default_value  => $locale_default,
-	  available      => $locale_available,
+	  default_locale => $default_locale,
+	  locales        => $locales,
 	}
 
 	class { 'timezone':
