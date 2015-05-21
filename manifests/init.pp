@@ -41,31 +41,42 @@ class server (
 	}
 
 	class { 'apt':
-	  always_apt_update    => false,
-	  disable_keys         => undef,
-	  purge_sources_list   => true,
-	  purge_sources_list_d => true,
+	  update => {
+		frequency => 'daily',
+	  },
+	  purge => {
+		sources.list => true,
+		sources.list.d => true,
+		preferences.list => true,
+		preferences.list.d => true,
+	  },
 	}
 
 	apt::source { 'debian':
 	  location          => 'http://ftp.us.debian.org/debian/',
 	  release           => 'wheezy',
 	  repos             => 'main non-free contrib',
-	  include_src       => true
+	  include           => {
+		deb => true,
+	  }
 	}
 
 	apt::source { 'updates':
 	  location          => 'http://ftp.us.debian.org/debian/',
 	  release           => 'wheezy-updates',
 	  repos             => 'main non-free contrib',
-	  include_src       => true
+	  include           => {
+		deb => true,
+	  }
 	}
 
 	apt::source { 'security':
 	  location          => 'http://security.debian.org/',
 	  release           => 'wheezy/updates',
 	  repos             => 'main non-free contrib',
-	  include_src       => true
+	  include           => {
+		deb => true,
+	  }
 	}
 
 	if(str2bool($security_updates)){
@@ -79,7 +90,7 @@ class server (
 	if !empty($packages) {
 		package { $packages:
 			ensure => installed,
-		}	
+		}
 	}
 
 	if !empty($users) {
