@@ -30,6 +30,7 @@
     {"name":"puppetlabs/concat","version_requirement":">= 2.0.0"},
     {"name":"puppetlabs/apt","version_requirement":">= 2.0.0"},
     {"name":"puppetlabs/ntp","version_requirement":">= 3.2.0"},
-    {"name":"saz/locales","version_requirement":">= 2.2.0"}
+    {"name":"saz/locales","version_requirement":">= 2.2.0"},
+    {"name":"saz/timezone","version_requirement":">= 3.3.0"}
   ]
 }
