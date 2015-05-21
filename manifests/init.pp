@@ -83,10 +83,6 @@ class server (
         class { 'server::security_updates': }
     }
 
-    if(str2bool($logrotate)){
-        class { 'logrotate': }
-    }
-
     if !empty($packages) {
         package { $packages:
             ensure => installed,
