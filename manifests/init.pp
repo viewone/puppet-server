@@ -61,7 +61,6 @@ class server (
             location => '',
             release => 'wheezy',
             repos => 'main non-free contrib',
-            password => false,
             include           => {
                 deb => true,
               }
