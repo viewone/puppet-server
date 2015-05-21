@@ -1,7 +1,12 @@
-class server::hostname( $hostname = '' ) {
+class server::hostname( $hostname = '', $hosts = {}) {
 
 	if empty($hostname) {
 		warning( 'You have to specify hostname' )
+	}
+
+	file { "/etc/hosts":
+		ensure => present,
+		content => template('server/hosts.erb'),
 	}
 
 	file { 'hostname':
@@ -11,12 +16,11 @@ class server::hostname( $hostname = '' ) {
 	    group   => 'root',
 	    mode    => 0644,
 	    content => $hostname,
-	    notify => Exec['/etc/init.d/hostname.sh']
+	    before => Exec['/etc/init.d/hostname.sh']
 	}
 
 	exec { '/etc/init.d/hostname.sh':
 	    require => File['/etc/hostname'],
 	    refreshonly => true
 	}
-
 }

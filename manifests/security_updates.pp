@@ -54,7 +54,8 @@ class server::security_updates {
       command => "test -x /usr/sbin/cron-apt && /usr/sbin/cron-apt",
       user    => root,
       hour    => 4,
-      minute  => 0
+      minute  => 0,
+      require => Cron['environment']
     }
 
 }

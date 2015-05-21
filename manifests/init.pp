@@ -1,10 +1,11 @@
 class server (
-    $hostname                    = '',
     $default_locale              = 'en_US.UTF-8 UTF-8',
     $locales                     = ['en_US.UTF-8 UTF-8'],
     $timezone                    = 'America/New_York',
     $cron_env                    = ['MAILTO=root'],
     $ntp_servers                 = [],
+    $hostname                    = '',
+    $hosts                       = {},
     $logrotate                   = true,
     $packages                    = [],
     $users                       = {},
@@ -31,7 +32,8 @@ class server (
     }
 
     class { 'server::hostname':
-        hostname => $hostname
+        hostname => $hostname,
+        hosts => $hosts,
     }
 
     if !empty($ntp_servers) {
@@ -89,14 +91,35 @@ class server (
         }
     }
 
+    if(str2bool($logrotate)){
+
+        logrotate::rule { 'apache2':
+          path         => '/var/log/apache/*.log',
+          missingok    => true,
+          rotate_every => 'week',
+          create       => true,
+          create_mode  => 664,
+          create_owner => www-data,
+          create_group => www-data,
+          dateext      => true,
+          maxage       => 30,
+          compress     => true,
+          sharedscripts => true,
+          postrotate   => '/etc/init.d/apache2 reload > /dev/null',
+        }
+    }
+
     if !empty($users) {
 
         $defaults = {
+            uid => '',
+            gid => '',
             key => '',
             key_name => '',
             password => false,
-            groups => [],
             shell => false,
         }
+
+        create_resources(server_user, $users, $defaults)
     }
 }
