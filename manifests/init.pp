@@ -9,6 +9,7 @@ class server (
     $ntp_servers                 = [],
     $logrotate                   = true,
     $packages                    = [],
+    $ssh                         = {},
     $users                       = {},
     $security_updates            = true,
 ) inherits server::params{
@@ -41,6 +42,11 @@ class server (
         class { '::ntp':
           servers => $ntp_servers,
         }
+    }
+
+    class { 'ssh':
+      storeconfigs_enabled => false,
+      server_options => $ssh
     }
 
     if !empty($users) {
