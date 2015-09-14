@@ -10,6 +10,7 @@ class server (
     $logrotate                   = true,
     $packages                    = [],
     $ssh                         = {},
+    $firewall                    = {},
     $users                       = {},
     $security_updates            = true,
 ) inherits server::params{
@@ -115,5 +116,28 @@ class server (
         }
 
         create_resources(server_user, $users, $defaults)
+    }
+
+    if !empty($firewall) {
+
+        include ufw
+
+        exec { 'ufw-reset':
+            require => Package['ufw'],
+            command => '/usr/sbin/ufw --force reset',
+        }
+
+        if !empty($firewall[allow]) {
+
+            $firewall_defaults = {
+                proto => 'tcp',
+                port => 'all',
+                ip => '',
+                from => 'any',
+                require => Exec['ufw-reset']
+            }
+
+            create_resources('::ufw::allow', $firewall[allow], $firewall_defaults)
+        }
     }
 }
