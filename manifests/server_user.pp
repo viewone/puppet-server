@@ -1,4 +1,4 @@
-define server_user ($uid, $gid, $key, $key_name, $password, $shell) {
+define server_user ($uid, $gid, $groups, $key, $key_name, $password, $shell) {
 
     group { $name :
         name   => $name,
@@ -10,9 +10,10 @@ define server_user ($uid, $gid, $key, $key_name, $password, $shell) {
         name => $name,
         ensure => 'present',
         managehome => true,
-        password => $password,
-        gid => $gid,
         uid => $uid,
+        gid => $gid,
+        groups => $groups,
+        password => $password,
         shell => $shell,
     }
 

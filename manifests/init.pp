@@ -109,6 +109,7 @@ class server (
         $defaults = {
             uid => '',
             gid => '',
+            groups => [],
             key => '',
             key_name => '',
             password => false,
